@@ -1,7 +1,7 @@
-`include "2ffsync.v"
+`include "ffsync.v"
 `include "wrtptr.v"
 `include "rdptr.v"
-`include "fifo_mem.v"
+`include "mem.v"
 
 module asynchronous_fifo #(parameter DEPTH=8, DATA_WIDTH=8) (
   input wclk, wrst_n,
@@ -20,8 +20,8 @@ module asynchronous_fifo #(parameter DEPTH=8, DATA_WIDTH=8) (
 
   wire [PTR_WIDTH-1:0] waddr, raddr;
 
-  synchronizer #(PTR_WIDTH) sync_wptr (rclk, rrst_n, g_wptr, g_wptr_sync); //write pointer to read clock domain
-  synchronizer #(PTR_WIDTH) sync_rptr (wclk, wrst_n, g_rptr, g_rptr_sync); //read pointer to write clock domain 
+  ffsync #(PTR_WIDTH) sync_wptr (rclk, rrst_n, g_wptr, g_wptr_sync); //write pointer to read clock domain
+  ffsync #(PTR_WIDTH) sync_rptr (wclk, wrst_n, g_rptr, g_rptr_sync); //read pointer to write clock domain 
   
   wptr_handler #(PTR_WIDTH) wptr_h(wclk, wrst_n, w_en,g_rptr_sync,b_wptr,g_wptr,full);
   rptr_handler #(PTR_WIDTH) rptr_h(rclk, rrst_n, r_en,g_wptr_sync,b_rptr,g_rptr,empty);
