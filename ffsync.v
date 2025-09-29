@@ -1,4 +1,4 @@
-module 2ffsync #(parameter WIDTH=3)
+module ffsync #(parameter WIDTH=3)
   (input clk, rst_n, [WIDTH:0] d_in,
    output reg [WIDTH:0] d_out);
   reg [WIDTH:0] q1;
