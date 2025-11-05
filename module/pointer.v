@@ -1,23 +1,28 @@
 parameter ptr_w = 3;
-module pointer(
+module ptr(
   input en,clk,
   input reg [ptr_w-1:0] pb_g,
-  output [ptr_w-1:0] ptr, pa_g,
+  output [ptr_w-1:0] pa, pa_g,
   output stat
 );
   int i;
-  reg [ptr_w-1:0] pb_b,pa_b;
-  reg rank;
+  reg [ptr_w-1:0] pb_b,pa_b,pa_nxt;
+  reg low;
   always@(*)begin
-    if(pb_b > a) rank <= 0;
-    else if(pb_b < a) rank <= 1;
-    else(pb_b == a) rank <= rank;
+    if(pb_b > a) low <= 1'b0;
+    else if(pb_b < a) low <= 1'b1;
+    else(pb_b == a) low <= low;
   end
   always@(*)begin//gray to binary
     for(i=ptr_w;i>0;i=i-1)begin
       pb_b[i] = pb_g[i]^pb_b[i+1];
     end
   end
-  assign pa_g = pa_b^{0,pa_b[ptr_w-1:1]};
-  
+  assign stat = (pa_b==pb_b)&low;
+  always@(posedge clk)begin
+    pa_b <= pa_nxt;
+    pa_nxt <= pa_b + (en & !stat);    
+  end
+  assign pa_g = pa_b^(pa_b>>1};
+  assign pa = pa_b;
 end module
